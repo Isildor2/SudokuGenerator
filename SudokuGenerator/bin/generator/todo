@@ -1,0 +1,27 @@
+TO DO
+
+-UI difficulty changer
+	-Dropdown for easy to hard
+	-each level is some percentage of the difficulty scale
+-UI reset button
+	-button
+	-clears board
+	-resets timer
+-UI new Sudoku button
+	-gives new Sudoku
+	-Warning to save the old one
+-UI differentiation original vs self placed numbers
+	-Numbers with grey backgrounds
+-UI message upon completion
+	-Label with Text
+	-Contains difficulty, time
+
+-Sudoku timer
+	-Timer thread in the background
+-Sudoku save function
+	-Serialize?
+	-Save to file
+-Sudoku load function
+	-reverse saving
+-Sudoku original(unchangeable/locked) numbers
+	-list of number indices that cant be changed
