@@ -2,22 +2,44 @@ package generator;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
-public class Fieldfiller {
-
-	public Fieldfiller() {
-		UI ui=new UI();
-		ui.setup(fill_field_with_numbers());
-	}
-	//makes a new Sudoku board
-	Sudoku fill_field_with_numbers() {
-		Sudoku sudoku = new Sudoku();
-		start_seed(sudoku);
+public class FieldFiller {
+	public Sudoku makeSudoku(double difficulty) {
+		Sudoku sudoku=new Sudoku();
+		for (int i=0;i<9;i++) {
+			for (int ii=0;ii<9;ii++) {
+				sudoku.setNumber(i,ii,0);
+			}
+		}
+		startSeed(sudoku);
 		solveBoard(sudoku);
+		sudoku.fillSolution();
+		emptyCells(sudoku,difficulty);
 		return sudoku;
 	}
-    //recursively fill board to get full sudoku after adding start seed
-	private boolean solveBoard(Sudoku sudoku) {
+	//deletes 0-64 numbers, making the sudoku different difficulties (up to impossible)
+	private void emptyCells(Sudoku sudoku,double difficulty) {
+		int counter = (int) (64-((1-difficulty)*64));
+		Random rand=new Random();
+		int deleted=0;
+		while(deleted<counter) {
+			int randline=rand.nextInt(0,9);
+			int randcolumn=rand.nextInt(0,9);
+			if (sudoku.getNumber(randline, randcolumn)!=0) {
+				sudoku.setNumber(randline, randcolumn, 0);
+				deleted++;
+			}
+		}
+		for (int i=0;i<9;i++) {
+			for (int j=0;j<9;j++) {
+				if (sudoku.getNumber(i,j)!=0) {
+					sudoku.addLockedNumber((i*9)+j);
+				}
+			}
+		}
+	}
+	public boolean solveBoard(Sudoku sudoku) {
         for(int row = 0; row < 9; row++) {
             for(int column = 0; column < 9; column++) {
                 if(sudoku.getNumber(row, column) == 0) {
@@ -37,17 +59,14 @@ public class Fieldfiller {
         }
         return true;
     }
-    //checks all placement constrictions
     private boolean isValidPlacement(Sudoku sudoku, int number, int row, int column) {
-        return !sudoku.line_contains_number(number, row) && !sudoku.column_contains_number(number, column) && !sudoku.box_contains_number(number, row, column);
+        return !sudoku.lineContainsNumber(number, row) && !sudoku.columnContainsNumber(number, column) && !sudoku.boxContainsNumber(number, row, column);
     }
     //fill box top left, center and bottom right with 1-9 in random order
     //creates 3*9! starting options
-	private void start_seed(Sudoku sudoku) {
+	private void startSeed(Sudoku sudoku) {
 		ArrayList<Integer> numbers=new ArrayList<Integer>();
-		for (int i=1;i<10;i++) {
-			numbers.add(i);
-		}
+		for (int i=1;i<10;i++) numbers.add(i);
 		int j=0;
 		while (j<9) {
 			Collections.shuffle(numbers);
